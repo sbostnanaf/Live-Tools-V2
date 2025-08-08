@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitGet Dashboard - Real Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loading { opacity: 0.5; }
+        .error { color: #ef4444; }
+        .success { color: #22c55e; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto p-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">BitGet Dashboard - Live Data</h1>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Balance Card -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">Account Balance</h2>
+                <div id="balance-content" class="loading">Loading...</div>
+            </div>
+            
+            <!-- Status Card -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">Connection Status</h2>
+                <div id="status-content" class="loading">Loading...</div>
+            </div>
+            
+            <!-- Positions Card -->
+            <div class="bg-gray-800 rounded-lg p-6 md:col-span-2">
+                <h2 class="text-xl font-semibold mb-4">Active Positions</h2>
+                <div id="positions-content" class="loading">Loading...</div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-8 text-gray-400">
+            <p>Data Source: Live Trading Strategies & cron.log</p>
+            <p>Last Update: <span id="last-update">-</span></p>
+            <button onclick="loadData()" class="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">
+                Refresh Data
+            </button>
+        </div>
+    </div>
+
+    <script>
+        async function loadData() {
+            const elements = {
+                balance: document.getElementById('balance-content'),
+                status: document.getElementById('status-content'),
+                positions: document.getElementById('positions-content'),
+                lastUpdate: document.getElementById('last-update')
+            };
+            
+            // Set loading state
+            Object.values(elements).forEach(el => el && el.classList.add('loading'));
+            
+            try {
+                // Load balance
+                const balanceResponse = await fetch('http://15.237.204.133:8000/api/bitget/balance');
+                const balanceData = await balanceResponse.json();
+                
+                if (balanceData.data && balanceData.data.USDT) {
+                    elements.balance.innerHTML = `
+                        <div class="text-3xl font-bold success">${balanceData.data.USDT.total} USDT</div>
+                        <div class="text-sm text-gray-400 mt-2">Source: ${balanceData.source}</div>
+                    `;
+                } else {
+                    elements.balance.innerHTML = '<div class="error">Failed to load balance</div>';
+                }
+                
+                // Load status
+                const statusResponse = await fetch('http://15.237.204.133:8000/api/bitget/status');
+                const statusData = await statusResponse.json();
+                
+                elements.status.innerHTML = `
+                    <div class="${statusData.status === 'connected' ? 'success' : 'error'}">
+                        Status: ${statusData.status}
+                    </div>
+                    <div class="text-sm mt-2">
+                        <div>Exchange: ${statusData.exchange}</div>
+                        <div>API Key: ${statusData.api_key}</div>
+                        <div>Data Source: ${statusData.data_source}</div>
+                        <div>Balance: ${statusData.real_balance_usdt} USDT</div>
+                        <div>Active Positions: ${statusData.active_positions}</div>
+                    </div>
+                `;
+                
+                // Load positions
+                const positionsResponse = await fetch('http://15.237.204.133:8000/api/bitget/positions');
+                const positionsData = await positionsResponse.json();
+                
+                if (positionsData.data && positionsData.data.length > 0) {
+                    elements.positions.innerHTML = positionsData.data.map(pos => `
+                        <div class="border border-gray-700 rounded p-4 mb-2">
+                            <div class="font-semibold">${pos.symbol}</div>
+                            <div>Size: ${pos.size}</div>
+                            <div>Side: ${pos.side}</div>
+                            <div>Strategy: ${pos.strategy}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    elements.positions.innerHTML = '<div class="text-gray-400">No active positions</div>';
+                }
+                
+                elements.lastUpdate.textContent = new Date().toLocaleString();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                elements.balance.innerHTML = '<div class="error">Error loading data</div>';
+                elements.status.innerHTML = '<div class="error">Error loading data</div>';
+                elements.positions.innerHTML = '<div class="error">Error loading data</div>';
+            }
+            
+            // Remove loading state
+            Object.values(elements).forEach(el => el && el.classList.remove('loading'));
+        }
+        
+        // Load data on page load
+        loadData();
+        
+        // Auto refresh every 30 seconds
+        setInterval(loadData, 30000);
+    </script>
+</body>
+</html>

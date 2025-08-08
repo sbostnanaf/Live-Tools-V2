@@ -17,6 +17,8 @@ else
         PYTHON_SCRIPT="python3 Live-Tools-V2/strategies/trix/multi_bitmart_lite.py"
     elif [ "$ARGUMENT" == "envelopes_multi_bitget" ]; then
         PYTHON_SCRIPT="python3 Live-Tools-V2/strategies/envelopes/multi_bitget.py"
+    elif [ "$ARGUMENT" == "envelopes_multi_bitmart" ]; then
+        PYTHON_SCRIPT="python3 Live-Tools-V2/strategies/envelopes/multi_bitmart.py"
     else
         echo "Argument non reconnu. Aucun ajout ne sera effectué."
     fi

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "dark": {
+                            950: "#020617",
+                            900: "#0f172a",
+                            800: "#1e293b"
+                        },
+                        "trading": {
+                            "green": {500: "#22c55e"},
+                            "red": {500: "#ef4444"}
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="dark bg-dark-950 text-white min-h-screen">
+    <div id="app">
+        <!-- Header -->
+        <header class="bg-dark-900 border-b border-dark-800 px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold">📊 Trading Dashboard</h1>
+                <div class="text-sm text-gray-400">
+                    <span id="current-time"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-6 py-8">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-dark-800 rounded-lg p-6 border border-dark-700">
+                    <h3 class="text-sm text-gray-400 mb-2">Total Balance</h3>
+                    <p class="text-2xl font-bold text-white" id="total-balance">$10,000.00</p>
+                    <p class="text-sm text-trading-green-500" id="balance-change">+$150.25 (1.52%)</p>
+                </div>
+                
+                <div class="bg-dark-800 rounded-lg p-6 border border-dark-700">
+                    <h3 class="text-sm text-gray-400 mb-2">Today P&L</h3>
+                    <p class="text-2xl font-bold text-trading-green-500" id="daily-pnl">+$150.25</p>
+                    <p class="text-sm text-gray-400">Active trades: <span id="active-trades">3</span></p>
+                </div>
+                
+                <div class="bg-dark-800 rounded-lg p-6 border border-dark-700">
+                    <h3 class="text-sm text-gray-400 mb-2">Win Rate</h3>
+                    <p class="text-2xl font-bold text-white" id="win-rate">68.5%</p>
+                    <p class="text-sm text-gray-400">Trades: <span id="total-trades">45</span></p>
+                </div>
+                
+                <div class="bg-dark-800 rounded-lg p-6 border border-dark-700">
+                    <h3 class="text-sm text-gray-400 mb-2">Status</h3>
+                    <p class="text-2xl font-bold text-trading-green-500" id="bot-status">🟢 Online</p>
+                    <p class="text-sm text-gray-400">System healthy</p>
+                </div>
+            </div>
+
+            <!-- API Status -->
+            <div class="bg-dark-800 rounded-lg p-6 border border-dark-700 mb-8">
+                <h2 class="text-xl font-bold mb-4">API Status</h2>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span>Backend API</span>
+                        <span class="text-trading-green-500" id="api-status">🟢 Connected</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Database</span>
+                        <span class="text-trading-green-500" id="db-status">🟢 Connected</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Cache</span>
+                        <span class="text-trading-green-500" id="cache-status">🟢 Connected</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Documentation -->
+            <div class="bg-dark-800 rounded-lg p-6 border border-dark-700">
+                <h2 class="text-xl font-bold mb-4">Quick Access</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <a href="/health" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg text-center transition-colors">
+                        🏥 Health Check
+                    </a>
+                    <a href="/docs" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg text-center transition-colors">
+                        📚 API Documentation
+                    </a>
+                    <button onclick="testAPI()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg transition-colors">
+                        🧪 Test API
+                    </button>
+                </div>
+                <div class="mt-4">
+                    <p class="text-sm text-gray-400 mb-2">API Response:</p>
+                    <pre id="api-response" class="bg-dark-900 p-4 rounded-lg text-sm text-gray-300 max-h-40 overflow-auto">Ready to test...</pre>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Update time
+        function updateTime() {
+            document.getElementById("current-time").textContent = new Date().toLocaleString();
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Check API health
+        async function checkHealth() {
+            try {
+                const response = await fetch("/health");
+                const data = await response.json();
+                document.getElementById("api-status").textContent = "🟢 Connected";
+                document.getElementById("db-status").textContent = data.services?.database === "connected" ? "🟢 Connected" : "🔴 Error";
+                document.getElementById("cache-status").textContent = data.services?.cache === "connected" ? "🟢 Connected" : "🔴 Error";
+            } catch (error) {
+                document.getElementById("api-status").textContent = "🔴 Error";
+                document.getElementById("db-status").textContent = "🔴 Error";
+                document.getElementById("cache-status").textContent = "🔴 Error";
+            }
+        }
+
+        // Test API
+        async function testAPI() {
+            const responseDiv = document.getElementById("api-response");
+            responseDiv.textContent = "Testing API...";
+            
+            try {
+                const response = await fetch("/health");
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.textContent = "Error: " + error.message;
+            }
+        }
+
+        // Initialize
+        checkHealth();
+        
+        // Refresh every 30 seconds
+        setInterval(checkHealth, 30000);
+    </script>
+</body>
+</html>

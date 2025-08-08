@@ -1,0 +1,22 @@
+{
+  "initial_balance": 6927.42397474,
+  "last_balance": 6927.42397474,
+  "start_date": "2025-08-08T13:32:27.760231",
+  "trades": [],
+  "daily_snapshots": [
+    {
+      "date": "2025-08-08",
+      "balance": 6927.42397474,
+      "positions": 0,
+      "timestamp": "2025-08-08T13:32:27.760231"
+    }
+  ],
+  "stats": {
+    "total_trades": 0,
+    "winning_trades": 0,
+    "losing_trades": 0,
+    "total_pnl": 0.0,
+    "winrate": 0.0
+  },
+  "crypto_stats": {}
+}

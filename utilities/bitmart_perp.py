@@ -208,11 +208,15 @@ class PerpBitmart:
                     size=Decimal(position["contracts"])
                     * Decimal(position["contractSize"]),
                     usd_size=round(
-                        position["notional"],
+                        position["markPrice"],
                         2,
                     ),
                     entry_price=position["entryPrice"],
-                    current_price=Decimal(position["markPrice"]),
+                    current_price=Decimal(position["markPrice"])
+                    / (
+                        Decimal(position["contracts"])
+                        * Decimal(position["contractSize"])
+                    ),
                     unrealizedPnl=position["unrealizedPnl"],
                     liquidation_price=liquidation_price,
                     leverage=position["leverage"],

@@ -16,53 +16,53 @@ MARGIN_MODE = "isolated" # isolated or cross
 LEVERAGE = 2
 ACCOUNT_NAME = "bitmart1"
 SIDE = ["long"]
-DISCORD_WEBHOOK = ""
+DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1297301129717088266/rPd3jE2U4CliCBaZOKLUAY6xMn6AhNsqLrXk3g0MBDueL4Dj_TOzoCLsAwNTOBuYx_a7"
 PARAMS = {
     "1h": {
         "p1": {
             "BTC/USDT": {
-                "trix_length": 19,
-                "trix_signal_length": 15,
+                "trix_length": 30,
+                "trix_signal_length": 200,
                 "trix_signal_type": "sma",
-                "long_ma_length": 500,
+                "long_ma_length": 200,
             },
             "ETH/USDT": {
-                "trix_length": 21,
-                "trix_signal_length": 9,
-                "trix_signal_type": "ema",
-                "long_ma_length": 500,
+                "trix_length": 22,
+                "trix_signal_length": 150,
+                "trix_signal_type": "sma",
+                "long_ma_length": 105,
             },
         },
     },
     "2h": {
         "p1": {
             "BTC/USDT": {
-                "trix_length": 7,
-                "trix_signal_length": 11,
-                "trix_signal_type": "ema",
-                "long_ma_length": 300,
+                "trix_length": 20,
+                "trix_signal_length": 60,
+                "trix_signal_type": "sma",
+                "long_ma_length": 35,
             },
             "ETH/USDT": {
-                "trix_length": 21,
-                "trix_signal_length": 47,
+                "trix_length": 22,
+                "trix_signal_length": 200,
                 "trix_signal_type": "sma",
-                "long_ma_length": 300,
+                "long_ma_length": 32,
             },
         },
     },
     "4h": {
         "p1": {
             "BTC/USDT": {
-                "trix_length": 11,
-                "trix_signal_length": 45,
-                "trix_signal_type": "ema",
-                "long_ma_length": 200,
+                "trix_length": 9,
+                "trix_signal_length": 75,
+                "trix_signal_type": "sma",
+                "long_ma_length": 50,
             },
             "ETH/USDT": {
-                "trix_length": 19,
-                "trix_signal_length": 7,
+                "trix_length": 22,
+                "trix_signal_length": 250,
                 "trix_signal_type": "ema",
-                "long_ma_length": 200,
+                "long_ma_length": 23,
             },
         },
     },

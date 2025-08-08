@@ -1,0 +1,8 @@
+#\!/bin/bash
+cd /home/ubuntu/Live-Tools-V2
+export PYTHONPATH=/home/ubuntu/Live-Tools-V2
+source .venv/bin/activate
+echo "--- Execution started at \Fri, Aug  8, 2025 11:28:09 AM ---" >> cron.log
+#python3 strategies/trix/multi_bitmart_lite.py >> cron.log 2>&1
+python3 strategies/envelopes/multi_bitget.py >> cron.log 2>&1
+echo "--- Execution finished at \Fri, Aug  8, 2025 11:28:09 AM ---" >> cron.log
